@@ -1,3 +1,4 @@
-# INF475-HW Stochastic Modeling and Simulation
+# INF-475 Stochastic Modeling and Simulation
 ## Homeworks
-### Daniel San Martin
+
+* Homework 1: Monte Carlo integration
