@@ -5,7 +5,7 @@ f1 <- function(x) {
 
 # Exercise 2
 f2 <- function(x) {
-	y <- (1 - x)/x^5
+	y <- (1/x - 1) / (x*(1+(1/x-1)^2))^2
 }
 
 # Exercise 3
@@ -36,13 +36,12 @@ k = 1000000
 
 # Compute integrals
 r1 <- montecarlo(f1, k)
-r1
-
 r2 <- montecarlo(f2, k)
-r2
-
 r3 <- montecarlo(f3, k)
-r3
-
 r4 <- montecarlo2D(f4, k)
-r4
+
+# Print results
+cat(sprintf("Integral 1: %f \n", r1))
+cat(sprintf("Integral 2: %f \n", r2))
+cat(sprintf("Integral 3: %f \n", r3))
+cat(sprintf("Integral 4: %f \n", r4))
