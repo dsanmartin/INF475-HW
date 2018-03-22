@@ -1,3 +1,64 @@
+# Question 1 - Randon Number Generator
+
+# Using CPU frequency
+RNG_freq <- function(N) {
+	num <- vector(mode="numeric", length=N)
+	#cat(num)
+	for (i in 1:N) {
+		cmd <- system("lscpu | grep 'CPU MHz'", intern = TRUE)
+		freq <- as.double(sapply(strsplit(cmd, " "), tail, 1))
+		num[i] <- freq %% 1
+	}
+	return (num)
+}
+
+# Using Wichmann & Hill algorithm
+RNG_WH <- function(N) {
+	x <- vector(mode="numeric", length=N)
+	y <- vector(mode="numeric", length=N)
+	z <- vector(mode="numeric", length=N)
+	u <- vector(mode="numeric", length=N)
+
+	x[1] = 6
+	y[1] = 2
+	z[1] = 5
+
+	for (i in 2:N) {
+		x[i] = (171*x[i-1]) %% 30269
+		y[i] = (172*y[i-1]) %% 30307
+		z[i] = (170*z[i-1]) %% 30323
+
+		u[i] = (x[i]/30269 + y[i]/30307 + z[i]/30323) %% 1
+	}
+	return(u)
+}
+
+# Using linear congruential generator
+RNG_cong <- function(N) {
+	m <- 9
+	x <- vector(mode="numeric", length=N)
+	u <- vector(mode="numeric", length=N)
+
+	x[1] = 3
+	x[2] = 2
+	x[3] = 1
+
+	u[1] = x[1] / m
+	u[2] = x[2] / m
+	u[3] = x[3] / m
+
+	a <- c(8, 6, 2)
+
+	for (n in 4:N) {
+	 x[n] = (a[1]*x[n-1] + a[2]*x[n-2] + a[3]*x[n-3]) %% m
+	 u[n] = x[n] / m
+	}
+
+	return(u)	
+}
+
+
+
 # Exercise 1
 f1 <- function(x) {
 	y <- 5*(1+25*x^2)^(3/2)
@@ -21,6 +82,9 @@ f4 <- function(x, y) {
 # Monte Carlo Integration for 1D
 montecarlo = function(f, k) {
 	X <- runif(k, 0, 1)
+	#X <- RNG_freq(k)
+	#X <- RNG_WH(k)
+	#X <- RNG_cong(k)
 	int <- sum(f(X)) / k
 } 
 
