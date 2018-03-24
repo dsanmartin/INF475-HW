@@ -19,9 +19,9 @@ RNG_WH <- function(N) {
 	z <- vector(mode="numeric", length=N)
 	u <- vector(mode="numeric", length=N)
 
-	x[1] = 6
+	x[1] = 1
 	y[1] = 2
-	z[1] = 5
+	z[1] = 3
 
 	for (i in 2:N) {
 		x[i] = (171*x[i-1]) %% 30269
@@ -81,9 +81,9 @@ f4 <- function(x, y) {
 
 # Monte Carlo Integration for 1D
 montecarlo = function(f, k) {
-	X <- runif(k, 0, 1)
+	#X <- runif(k, 0, 1)
 	#X <- RNG_freq(k)
-	#X <- RNG_WH(k)
+	X <- RNG_WH(k)
 	#X <- RNG_cong(k)
 	int <- sum(f(X)) / k
 } 
