@@ -19,9 +19,11 @@ RNG_WH <- function(N) {
 	z <- vector(mode="numeric", length=N)
 	u <- vector(mode="numeric", length=N)
 
-	x[1] = 1
-	y[1] = 2
-	z[1] = 3
+	x[1] = 6
+	y[1] = 6
+	z[1] = 6
+
+	u[1] = (x[1]/30269 + y[1]/30307 + z[1]/30323) %% 1
 
 	for (i in 2:N) {
 		x[i] = (171*x[i-1]) %% 30269
@@ -57,7 +59,30 @@ RNG_cong <- function(N) {
 	return(u)	
 }
 
+validation <- function(sample) {
+	# Test Chi-squared 
+	intervals <- seq(0, 1, length.out=10)
+	sample.counts <- hist(sample, breaks=intervals, plot=F)$counts
+	chsq <- chisq.test(rbind(sample.counts, mean(sample.counts)))
 
+	# Test de Kolmogorov - Smirnov
+	ks <- ks.test(sample, 'punif')
+
+	print(ks)
+	print(chsq)
+
+}
+
+# Chi squared
+N <- 1000#0000
+X <- RNG_WH(N)
+#X <- RNG_cong(N)
+#X <- runif(N, 0, 1)
+
+validation(X)
+
+
+# Question 2
 
 # Exercise 1
 f1 <- function(x) {
@@ -81,9 +106,9 @@ f4 <- function(x, y) {
 
 # Monte Carlo Integration for 1D
 montecarlo = function(f, k) {
-	#X <- runif(k, 0, 1)
+	X <- runif(k, 0, 1)
 	#X <- RNG_freq(k)
-	X <- RNG_WH(k)
+	#X <- RNG_WH(k)
 	#X <- RNG_cong(k)
 	int <- sum(f(X)) / k
 } 
