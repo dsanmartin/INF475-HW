@@ -6,173 +6,210 @@
 \usepackage[letterpaper, margin=1in]{geometry}
 
 \lstset{language=R,
-    basicstyle=\small\ttfamily,
-    stringstyle=\color{DarkGreen},
-    otherkeywords={0,1,2,3,4,5,6,7,8,9},
-    morekeywords={TRUE,FALSE},
-    deletekeywords={data,frame,length,as,character},
-    keywordstyle=\color{blue},
-    commentstyle=\color{DarkGreen},
-    tabsize=2,
+  basicstyle=\small\ttfamily,
+  stringstyle=\color{DarkGreen},
+  otherkeywords={0,1,2,3,4,5,6,7,8,9},
+  morekeywords={TRUE,FALSE},
+  deletekeywords={data,frame,length,as,character},
+  keywordstyle=\color{blue},
+  commentstyle=\color{DarkGreen},
+  tabsize=2,
 }
 
 \title{
-    \large{
-        \textbf{Tarea 1\\ Modelamiento Estocástico y Simulación}} \\
-			\normalsize{Universidad Técnica Federico Santa María\\ Departamento de Informática\\	}
-		}
+  \large{\textbf{Tarea 1\\ Modelamiento Estocástico y Simulación}} \\
+	\normalsize{Universidad Técnica Federico Santa María\\ Departamento de Informática\\}
+}
+
 \author{
-    \normalsize Daniel San Martín Reyes \\ 
-    \normalsize \texttt{<daniel.sanmartinr@sansano.usm.cl>}}
-\date{Marzo del 2018}
+  \normalsize Daniel San Martín Reyes \\ 
+  \normalsize \texttt{<daniel.sanmartinr@sansano.usm.cl>}
+}
+
+\date{28 de Marzo de 2018}
 
 \begin{document}
 
-    \maketitle
-        
-    \section*{Tarea}
-        Usando el método de Monte Carlo
-        
-        \begin{enumerate}
-            \item Proponer un generador de Números aleatorios provenientes de la $\mathcal{U}(0,1)$ 
-                justifique como determina la calidad del generador.
-                
-            \item Usando los resultados del problema 1 evaluar las integrales 
-                \begin{itemize}
-                    \item $\displaystyle \int_{-\infty}^{\infty}e^{-x^2}dx$
-                        \begin{equation}
-                            \theta  = \int_{-\infty}^{\infty}e^{-x^2}dx.
-                        \end{equation}
-                        
-                        Dado que $e^{-x^2}$ es simétrica con respecto a $x=0$, entonces
-                        \begin{equation}
-                            \theta  = 2\int_{0}^{\infty}e^{-x^2}dx,
-                        \end{equation}
-                        Sea $y = \frac{1}{1+x}$, $dy = -\frac{dx}{(1+x)^2}= -y^2dx$, entonces
-                        \begin{equation}
-                            \theta = 2\int_{0}^{1}\frac{e^{-(\frac1y-1)^2}}{y^2}dy
-                        \end{equation}
-                        
-                        De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
-                        con $ h(y) = 2\frac{e^{-(\frac1y-1)^2}}{y^2}$.
-                        
-                        Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 1.772264$. \bigskip                        
-                        
-                    \item $\displaystyle \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy$
-                        \begin{equation}
-                            \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy
-                        \end{equation}
-                        En este caso, $\theta$ puede ser estimado por $\hat{\theta} = \mathbb{E}[g(u_1, u_2)]$,
-                        con $U_1, U_2$ v.a.i.i.d $\mathcal{U}(0,1)$, por lo tanto
-                        \begin{equation}
-                            \hat{\theta} = \frac1k \sum_{i=1}^ke^{-(x+y)^2},
-                        \end{equation}
-                        donde $X, Y \sim U(0,1)$.
-                        
-                        Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 4.891916$.                        
-                    
-                \end{itemize}
-            \item  Defina su Problema de simulación y su impacto , Conceptualización
-                Modelo, los elementos constructivos, constructos del modelo, forma
-                Recolección de Datos ; Construcción del Modelo, Verificación y Validación,
-                forma de conducción delos experimentos y Análisis de los Resultados
-        \end{enumerate}
-        
-        % \begin{enumerate}
-        %     \item $\displaystyle \int_{0}^5(1+x^2)^{3/2}dx$
-        %         \begin{equation}
-        %             \theta = \int_{0}^{5}(1+x^2)^{3/2}dx
-        %         \end{equation}
-        %         Sea $y = \frac{x}{5}$, $dy = \frac{dx}{5}$, entonces
-                
-        %         \begin{equation}
-        %             \begin{split}
-        %                 \theta & = \int_{0}^{5}(1+x^2)^{3/2}dx \\
-        %                     & = \int_{0}^{1}5(1+(5y)^2)^{3/2}dy \\
-        %                     & = \int_{0}^{1}5(1+25y^2)^{3/2}dy.
-        %             \end{split}
-        %             %\theta = \int_{0}^{1}5(1+25y^2)^{3/2}dy
-        %         \end{equation}
-                
-        %         De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
-        %         con $ h(y) = 5(1+25y^2)^{3/2}$.
-            
-        %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 176.0202$. \bigskip
-                
-        %     \item $\displaystyle \int_{0}^{\infty}x(1+x^2)^{-2}dx$
-        %         \begin{equation}
-        %             \theta = \int_{0}^{\infty}x(1+x^2)^{-2}dx \\
-        %         \end{equation}
-                
-        %         Sea $y = \frac{1}{1+x}$, $dy = -\frac{dx}{(1+x)^2}= -y^2dx$, entonces
-                
-        %         \begin{equation}
-        %             \begin{split}
-        %                 \theta & = \int_{0}^{\infty}x(1+x^2)^{-2}dx \\
-        %                     & = \int_{1}^{0}-\frac{(1/y - 1)(1 + (1/y - 1)^2)^{-2}dy}{y^2} \\
-        %                     & = \int_{0}^{1}\frac{(1/y - 1)}{(y(1 + (1/y - 1)^2))^2}dy
-        %             \end{split}
-        %         \end{equation}
-                
-        %         De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
-        %         con $ h(y) = \frac{(1/y - 1)}{(y(1 + (1/y - 1)^2))^2}$.
-            
-        %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 0.5003132$. \bigskip
-                
-        %     \item $\displaystyle \int_{-\infty}^{\infty}e^{-x^2}dx$
-        %         % \begin{equation}
-        %         %     \begin{split}
-        %         %         \theta & = \int_{-\infty}^{\infty}e^{-x^2}dx \\
-        %         %          & = \int_{-\infty}^{0}e^{-x^2}dx + \int_{0}^{\infty}e^{-x^2}dx
-        %         %     \end{split}
-        %         % \end{equation}
-                
-        %         % Sea $u=\frac{1}{1+x} \implies du=-\frac{dx}{(1+x)^2}=-u^2dx$ y $v=-\frac{1}{1+x} \implies dv=\frac{dx}{(1+x)^2}=v^2dx$, 
-        %         % entonces
-        %         % \begin{equation}
-        %         %     \begin{split}
-        %         %         \theta & = \int_{-\infty}^{-1}e^{-x^2}dx + \int_{1}^{0}-\frac{e^{-(1/u-1)^2}}{u^2}du \\
-        %         %     \end{split}
-        %         % \end{equation}
-                
-        %         \begin{equation}
-        %             \theta  = \int_{-\infty}^{\infty}e^{-x^2}dx.
-        %         \end{equation}
-                
-        %         Dado que $e^{-x^2}$ es simétrica con respecto a $x=0$, entonces
-        %         \begin{equation}
-        %             \theta  = 2\int_{0}^{\infty}e^{-x^2}dx,
-        %         \end{equation}
-        %         Sea $y = \frac{1}{1+x}$, $dy = -\frac{dx}{(1+x)^2}= -y^2dx$, entonces
-        %         \begin{equation}
-        %             \theta = 2\int_{0}^{1}\frac{e^{-(\frac1y-1)^2}}{y^2}dy
-        %         \end{equation}
-                
-        %         De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
-        %         con $ h(y) = 2\frac{e^{-(\frac1y-1)^2}}{y^2}$.
-                
-        %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 1.772264$. \bigskip
-                
-        %     \item $\displaystyle \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy$
-        %         \begin{equation}
-        %             \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy
-        %         \end{equation}
-        %         En este caso, $\theta$ puede ser estimado por $\hat{\theta} = \mathbb{E}[g(u_1, u_2)]$,
-        %         con $U_1, U_2$ v.a.i.i.d $\mathcal{U}(0,1)$, por lo tanto
-        %         \begin{equation}
-        %             \hat{\theta} = \frac1k \sum_{i=1}^ke^{-(x+y)^2},
-        %         \end{equation}
-        %         donde $X, Y \sim U(0,1)$.
-                
-        %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 4.891916$.
-        % \end{enumerate}
-        
-    \nocite{book:ross2013}
+  \maketitle
+      
+  \section*{Tarea}
+    Usando el método de Monte Carlo
     
-    \bibliographystyle{newapa}
-    \bibliography{references}
-    
-    \section*{Código}
-        \lstinputlisting[language=R]{../code/homework1.R}
+    \begin{enumerate}
+      \item Proponer un generador de Números aleatorios provenientes de la $\mathcal{U}(0,1)$ 
+        justifique como determina la calidad del generador.
+
+        Para el desarrollo de este trabajo se propone utilizar la combinación de algoritmos
+        congruenciales, en específico, basándose en el algoritmo combinado de Wichmann y Hill
+        \cite{wichmann1982algorithm}. \medskip
+
+        La determinación de la calidad del generador puede ser realizado mediante: Contraste de 
+        Kolmogorov-Smirnov y con el Test $\chi^2$.
+         
+          
+      \item Usando los resultados del problema 1 evaluar las integrales 
+        \begin{itemize}
+          \item $\displaystyle \int_{-\infty}^{\infty}e^{-x^2}dx$
+            \begin{equation}
+                \theta  = \int_{-\infty}^{\infty}e^{-x^2}dx.
+            \end{equation}
+            
+            Dado que $e^{-x^2}$ es simétrica con respecto a $x=0$, entonces
+            \begin{equation}
+                \theta  = 2\int_{0}^{\infty}e^{-x^2}dx,
+            \end{equation}
+            Sea $y = \frac{1}{1+x}$, $dy = -\frac{dx}{(1+x)^2}= -y^2dx$, entonces
+            \begin{equation}
+                \theta = 2\int_{0}^{1}\frac{e^{-(\frac1y-1)^2}}{y^2}dy
+            \end{equation}
+            
+            De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
+            con $ h(y) = 2\frac{e^{-(\frac1y-1)^2}}{y^2}$.
+            
+            Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 1.772264$. \bigskip                        
+              
+          \item $\displaystyle \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy$
+            \begin{equation}
+                \theta = \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy
+            \end{equation}
+            En este caso, $\theta$ puede ser estimado por $\hat{\theta} = \mathbb{E}[g(u_1, u_2)]$,
+            con $U_1, U_2$ v.a.i.i.d $\mathcal{U}(0,1)$, por lo tanto
+            \begin{equation}
+                \hat{\theta} = \frac1k \sum_{i=1}^ke^{-(x+y)^2},
+            \end{equation}
+            donde $X, Y \sim U(0,1)$.
+            
+            Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 4.891916$.                        
+            
+        \end{itemize}
+      \item  Defina su Problema de simulación y su impacto, Conceptualización
+        Modelo, los elementos constructivos, constructos del modelo, forma,
+        Recolección de Datos; Construcción del Modelo, Verificación y Validación,
+        forma de conducción de los experimentos y Análisis de los Resultados.
+
+        \begin{itemize}
+          \item \textbf{Problema:} Modelar la propagación de incendios forestales para ayudar a mejorar 
+            procesos de combate y control del fenómeno. En Chile este problema es de alto impacto debido al 
+            efecto dañino que tiene a nivel ambiental, económico y social. Es por esto que el desarrollo de 
+            modelos de buena calidad, coherentes con la realidad, se hacen importantes para el estudio, análisis 
+            y predicción del fenómeno. El principal objetivo es implementar un modelo que ayude a profesionales 
+            de instituciones que trabajen con este problema ya sea CONAF, ONEMI, etc.
+          \item \textbf{Conceptualización del Modelo:} Para el desarrollo del modelo se busca establecer la 
+            relación entre el comportamiento del fuego con la interacción entre el combustible y las condiciones
+            meteorológicas del escenario a simular.
+          \item \textbf{Recolección de Datos:} Los datos necesarios para el desarrollo del trabajo deben ser 
+            obtenidos de fuentes gubernamentales, específicamente de instituciones como CONAF para el modelar
+            el combustible y la DMC para conocer el modelo relacionado a los datos meteorológicos.
+          \item \textbf{Construcción del Modelo:} Dado que el problema es el manejo y/o control de la 
+            propagación del fuego en un incendio forestal, la idea es construir un modelo cualitativamente 
+            coherente con la realidad. Para iniciar, se busca comenzar con un modelo basado en autómata 
+            celular dada que la implementación es considerablemente más simple que comenzar con uno basado
+            en ecuaciones diferenciales. El modelo final espera ser construido mediante ecuaciones diferenciales
+            estocásticas, siempre que el tiempo así lo permita.
+          \item \textbf{Verificación y Validación:} Para verificar el modelo se intentará contactar con profesionales
+            expertos en el ámbito. Para la validación se espera contar con datos de las instituciones pertinentes
+            y que nos permitan contrastar resultados.
+          \item \textbf{Conducción de los Experimentos:} Por definir.
+          \item \textbf{Análisis de los Resultados:} Por realizar.
+        \end{itemize}
+
+    \end{enumerate}
+        
+    % \begin{enumerate}
+    %     \item $\displaystyle \int_{0}^5(1+x^2)^{3/2}dx$
+    %         \begin{equation}
+    %             \theta = \int_{0}^{5}(1+x^2)^{3/2}dx
+    %         \end{equation}
+    %         Sea $y = \frac{x}{5}$, $dy = \frac{dx}{5}$, entonces
+            
+    %         \begin{equation}
+    %             \begin{split}
+    %                 \theta & = \int_{0}^{5}(1+x^2)^{3/2}dx \\
+    %                     & = \int_{0}^{1}5(1+(5y)^2)^{3/2}dy \\
+    %                     & = \int_{0}^{1}5(1+25y^2)^{3/2}dy.
+    %             \end{split}
+    %             %\theta = \int_{0}^{1}5(1+25y^2)^{3/2}dy
+    %         \end{equation}
+            
+    %         De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
+    %         con $ h(y) = 5(1+25y^2)^{3/2}$.
+        
+    %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 176.0202$. \bigskip
+            
+    %     \item $\displaystyle \int_{0}^{\infty}x(1+x^2)^{-2}dx$
+    %         \begin{equation}
+    %             \theta = \int_{0}^{\infty}x(1+x^2)^{-2}dx \\
+    %         \end{equation}
+            
+    %         Sea $y = \frac{1}{1+x}$, $dy = -\frac{dx}{(1+x)^2}= -y^2dx$, entonces
+            
+    %         \begin{equation}
+    %             \begin{split}
+    %                 \theta & = \int_{0}^{\infty}x(1+x^2)^{-2}dx \\
+    %                     & = \int_{1}^{0}-\frac{(1/y - 1)(1 + (1/y - 1)^2)^{-2}dy}{y^2} \\
+    %                     & = \int_{0}^{1}\frac{(1/y - 1)}{(y(1 + (1/y - 1)^2))^2}dy
+    %             \end{split}
+    %         \end{equation}
+            
+    %         De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
+    %         con $ h(y) = \frac{(1/y - 1)}{(y(1 + (1/y - 1)^2))^2}$.
+        
+    %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 0.5003132$. \bigskip
+            
+    %     \item $\displaystyle \int_{-\infty}^{\infty}e^{-x^2}dx$
+    %         % \begin{equation}
+    %         %     \begin{split}
+    %         %         \theta & = \int_{-\infty}^{\infty}e^{-x^2}dx \\
+    %         %          & = \int_{-\infty}^{0}e^{-x^2}dx + \int_{0}^{\infty}e^{-x^2}dx
+    %         %     \end{split}
+    %         % \end{equation}
+            
+    %         % Sea $u=\frac{1}{1+x} \implies du=-\frac{dx}{(1+x)^2}=-u^2dx$ y $v=-\frac{1}{1+x} \implies dv=\frac{dx}{(1+x)^2}=v^2dx$, 
+    %         % entonces
+    %         % \begin{equation}
+    %         %     \begin{split}
+    %         %         \theta & = \int_{-\infty}^{-1}e^{-x^2}dx + \int_{1}^{0}-\frac{e^{-(1/u-1)^2}}{u^2}du \\
+    %         %     \end{split}
+    %         % \end{equation}
+            
+    %         \begin{equation}
+    %             \theta  = \int_{-\infty}^{\infty}e^{-x^2}dx.
+    %         \end{equation}
+            
+    %         Dado que $e^{-x^2}$ es simétrica con respecto a $x=0$, entonces
+    %         \begin{equation}
+    %             \theta  = 2\int_{0}^{\infty}e^{-x^2}dx,
+    %         \end{equation}
+    %         Sea $y = \frac{1}{1+x}$, $dy = -\frac{dx}{(1+x)^2}= -y^2dx$, entonces
+    %         \begin{equation}
+    %             \theta = 2\int_{0}^{1}\frac{e^{-(\frac1y-1)^2}}{y^2}dy
+    %         \end{equation}
+            
+    %         De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
+    %         con $ h(y) = 2\frac{e^{-(\frac1y-1)^2}}{y^2}$.
+            
+    %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 1.772264$. \bigskip
+            
+    %     \item $\displaystyle \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy$
+    %         \begin{equation}
+    %             \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy
+    %         \end{equation}
+    %         En este caso, $\theta$ puede ser estimado por $\hat{\theta} = \mathbb{E}[g(u_1, u_2)]$,
+    %         con $U_1, U_2$ v.a.i.i.d $\mathcal{U}(0,1)$, por lo tanto
+    %         \begin{equation}
+    %             \hat{\theta} = \frac1k \sum_{i=1}^ke^{-(x+y)^2},
+    %         \end{equation}
+    %         donde $X, Y \sim U(0,1)$.
+            
+    %         Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 4.891916$.
+    % \end{enumerate}
+        
+  \nocite{ross2013}
+  
+  \bibliographystyle{newapa}
+  \bibliography{references}
+  
+  \section*{Código}
+    \lstinputlisting[language=R]{../code/homework1.R}
 
 \end{document}
