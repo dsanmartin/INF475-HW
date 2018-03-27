@@ -143,7 +143,15 @@
         adjunto.
         
           
-      \item Usando los resultados del problema 1 evaluar las integrales 
+      \item Usando los resultados del problema 1 evaluar las integrales. \medskip 
+
+        Mediante la ley de los grandes números, podemos estimar las integrales con
+        \begin{equation}
+            \sum_{i=1}^k\frac{g(u_i)}{k} ~ \to ~ \mathbb{E}[g(u)] ~ \to \theta ~ \text{cuando} ~ k \to \infty,
+        \end{equation}
+
+        con $U \sim \mathcal{U}(0,1)$ generados con la propuesta del problema 1.
+
         \begin{itemize}
           \item $\displaystyle \int_{-\infty}^{\infty}e^{-x^2}dx$
             \begin{equation}
