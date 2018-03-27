@@ -1,38 +1,15 @@
 # Question 1 - Randon Number Generator
 
-# Using CPU frequency
-RNG_freq <- function(N) {
+# Get CPU frequency decimal part for seed
+CPU_seed <- function(N) {
 	num <- vector(mode="numeric", length=N)
-	#cat(num)
+
 	for (i in 1:N) {
 		cmd <- system("lscpu | grep 'CPU MHz'", intern = TRUE)
 		freq <- as.double(sapply(strsplit(cmd, " "), tail, 1))
 		num[i] <- freq %% 1
 	}
 	return (num)
-}
-
-# Using Wichmann & Hill algorithm
-RNG_WH <- function(N) {
-	x <- vector(mode="numeric", length=N)
-	y <- vector(mode="numeric", length=N)
-	z <- vector(mode="numeric", length=N)
-	u <- vector(mode="numeric", length=N)
-
-	x[1] = 6
-	y[1] = 6
-	z[1] = 6
-
-	u[1] = (x[1]/30269 + y[1]/30307 + z[1]/30323) %% 1
-
-	for (i in 2:N) {
-		x[i] = (171*x[i-1]) %% 30269
-		y[i] = (172*y[i-1]) %% 30307
-		z[i] = (170*z[i-1]) %% 30323
-
-		u[i] = (x[i]/30269 + y[i]/30307 + z[i]/30323) %% 1
-	}
-	return(u)
 }
 
 # Using linear congruential generator
@@ -49,7 +26,7 @@ RNG_cong <- function(N) {
 	u[2] = x[2] / m
 	u[3] = x[3] / m
 
-	a <- c(8, 6, 2)
+	a <- CPU_seed(3)
 
 	for (n in 4:N) {
 	 x[n] = (a[1]*x[n-1] + a[2]*x[n-2] + a[3]*x[n-3]) %% m
@@ -59,6 +36,32 @@ RNG_cong <- function(N) {
 	return(u)	
 }
 
+# Using Wichmann & Hill algorithm
+RNG_WH <- function(N) {
+	x <- vector(mode="numeric", length=N)
+	y <- vector(mode="numeric", length=N)
+	z <- vector(mode="numeric", length=N)
+	u <- vector(mode="numeric", length=N)
+
+	# Using CPU for seed
+	cpu = CPU_seed(3)
+	x[1] = cpu[1] 
+	y[1] = cpu[2] 
+	z[1] = cpu[3] 
+
+	u[1] = (x[1]/30269 + y[1]/30307 + z[1]/30323) %% 1
+
+	for (i in 2:N) {
+		x[i] = (171*x[i-1]) %% 30269
+		y[i] = (172*y[i-1]) %% 30307
+		z[i] = (170*z[i-1]) %% 30323
+
+		u[i] = (x[i]/30269 + y[i]/30307 + z[i]/30323) %% 1
+	}
+	return(u)
+}
+
+# Validation with chi-squared and K-S
 validation <- function(sample) {
 	# Test Chi-squared 
 	intervals <- seq(0, 1, length.out=10)
@@ -70,15 +73,11 @@ validation <- function(sample) {
 
 	print(ks)
 	print(chsq)
-
 }
 
-# Chi squared
-N <- 1000#0000
+# Quality of RNG
+N <- 10000000
 X <- RNG_WH(N)
-#X <- RNG_cong(N)
-#X <- runif(N, 0, 1)
-
 validation(X)
 
 
@@ -101,22 +100,22 @@ f3 <- function(x) {
 
 # Exercise 4
 f4 <- function(x, y) {
-	y <- exp((x + y)^2)
+	z <- exp((x + y)^2)
 }
 
 # Monte Carlo Integration for 1D
 montecarlo = function(f, k) {
-	X <- runif(k, 0, 1)
-	#X <- RNG_freq(k)
-	#X <- RNG_WH(k)
-	#X <- RNG_cong(k)
+	#X <- runif(k, 0, 1)
+	X <- RNG_WH(k)
 	int <- sum(f(X)) / k
 } 
 
 # Monte Carlo Integration for 2D
 montecarlo2D <- function (f, k) {
-	X <- runif(k, 0, 1)
-	Y <- runif(k, 0, 1)
+	#X <- runif(k, 0, 1)
+	#Y <- runif(k, 0, 1)
+	X <- RNG_WH(k)
+	Y <- RNG_WH(k)
 	int <- sum(f(X, Y)) / k
 }
 

@@ -39,13 +39,109 @@
       \item Proponer un generador de Números aleatorios provenientes de la $\mathcal{U}(0,1)$ 
         justifique como determina la calidad del generador.
 
-        Para el desarrollo de este trabajo se propone utilizar la combinación de algoritmos
-        congruenciales, en específico, basándose en el algoritmo combinado de Wichmann y Hill
-        \cite{wichmann1982algorithm}. \medskip
+        Para el desarrollo de este trabajo se propone utilizar una combinación de algoritmos
+        congruenciales. La combinación de algoritmos congruenciales se basa en
+        los siguientes resultados:
 
-        La determinación de la calidad del generador puede ser realizado mediante: Contraste de 
-        Kolmogorov-Smirnov y con el Test $\chi^2$.
-         
+        \begin{itemize}
+          \item Si $U_1, ..., U_k$ son variables aleatorias iid $\mathcal{U}(0,1)$ la parte
+            fraccionaria de $U_1 + ... + U_k$ también sigue una distribución $\mathcal{U}(0,1)$,
+            es decir, 
+            \begin{equation}
+              U_1 + U_2 + ... + U_k - [U_1 + U_2 + ... + U_k] \sim \mathcal{U}(0,1).
+            \end{equation}
+
+            Notar que $U_1 + U_2 + ... + U_k - [U_1 + U_2 + ... + U_k]$ es equivalente a 
+            $(U_1 + U_2 + ... + U_k) ~ \textrm{mod} ~ 1$
+
+          \item Si $u_1, u_2, ..., u_k$ están generados por algoritmos congruenciales con ciclos 
+            de periodo $c_1, c_2, ..., c_k$, respectivamente, entonces la parte fraccionaria de 
+            $u_1+u_2+...+u_k$ tiene un ciclo de periodo $\textrm{m.c.m.}\{c_1, c_2, ..., c_k\}$.
+        \end{itemize}
+
+        En este trabajo utilizamos el algoritmo combinado de Wichmann y Hill \cite{wichmann1982algorithm}.
+        El generador de este algoritmo es:
+        
+        \begin{equation}
+          \begin{split}
+            x_i & = 171 ~ x_{i-1} ~ \textrm{mod} ~ 30269 \\
+            y_i & = 172 ~ y_{i-1} ~ \textrm{mod} ~ 30307 \\
+            z_i & = 170 ~ z_{i-1} ~ \textrm{mod} ~ 30323,
+          \end{split}          
+        \end{equation}
+
+        luego 
+
+        \begin{equation}
+          u_i = \left(\frac{x_i}{30269} + \frac{y_i}{30307} + \frac{z_i}{30323}\right) ~ \textrm{mod} ~ 1.
+        \end{equation}
+
+        Para intentar mejorar la implementación, las semillas del algoritmo fueron escogidas utilizando
+        la parte decimal de la frecuencia del procesador del equipo en el momento que se ejecuta el código. \medskip
+
+        La determinación de la calidad del generador podría ser realizado mediante el Test $\chi^2$ y el 
+        Contraste de Kolmogorov-Smirnov.
+
+        \begin{itemize}
+          \item Test $\chi^2$: Dada una muestra $X_1, X_2, ..., X_n$ de una $F_x(x)$ desconocida, se desea
+            contrastar
+            \begin{equation}
+              H_0: F_x(x) = F_0(x) \qquad  H_1:F_x(x) \neq F_0(x).
+            \end{equation}
+            Realizando una partición del soporte de $X$ en $k$ subconjuntos disjuntos $I_1, I_2, ..., I_k$
+            tal que $\bigcup I_i = X$ y $I_i \bigcap i_j = \emptyset$. Luego, se considera el estadístico
+            \begin{equation}
+              T = \sum_{i=1}^k \frac{(f_i - e_i)^2}{e_i} ~ \sim ~ \chi^2_{(k-1)},
+            \end{equation}
+
+            donde $f_i$ corresponde a la frecuncia absoluta del conjunto $i$-ésimo ($I_i$) y $e_i$ es el 
+            número de observaciones esperadas en $I_i$ bajo $H_0$. Este test considera la aleatoriedad
+            de $F_0 = \mathcal{U}(0,1)$. \medskip
+
+            El problema de este test de bondad de ajuste es que nos permite justificar el rechazo de 
+            la hipótesis, pero no ayuda mucho en la aceptación de esta.
+
+          \item Contraste de Kolmogorov-Smirnov: Dada una muestra aleatoria simple $x_1, ..., x_n$, la 
+            función de distribución empírica de la muestra es
+            \begin{equation}
+              F_n(x) = \frac1n \sum_{i=1}^n I_{x_i \leq x} = \frac{|\textrm{valores} ~ x_i \leq x|}{n}.
+            \end{equation}
+
+            Las hipótesis son:
+            \begin{equation}
+              H_0: F_n = F_0 \qquad H_1: F_n \neq F_0, 
+            \end{equation}
+
+            donde $F_0$ es la hipotética función de distribución. El estadístico de contraste para el 
+            test K-S es:
+            \begin{equation}
+              D_n = \sup_{x\in\mathbb{R}} |F_n(x) - F_0(x)|.
+            \end{equation}
+
+            La distribución exacata de $D_n$ está tabulada para valores de $n \leq 40$ y distintos 
+            niveles de significación $\alpha$. Para muestras grandes se utiliza la deistribución 
+            asintóticas de $D_n$ dada por 
+            \begin{equation}
+              \lim_{n\to \infty} P(\sqrt{n} D_n \leq z) = L(z)=1-2\sum_{i=1}^{\infty}(-1)^{i-1}e^{-2i^2z}.
+            \end{equation}
+
+            Para el caso particular de que $F_0$ es la función de distribución de una v.a $\mathcal{U}(0,1)$,
+            por lo tanto se puede comprobar que el estadístico de Kolmogorov-Smirnov para contraster la 
+            uniformidad de la muestra $u_1, ..., u_n$ viene dado por:
+            \begin{equation}
+              D_n = \max_{1\leq i \leq n} \Big\{\max \Big\{ \Big| \frac{i}{n} - u_{(i)} \Big|, \Big| 
+                \frac{i-1}{n} - u_{(i)} \Big| \Big\} \Big\}
+            \end{equation}
+
+            siendo $u_{(i)}$ el $i$-ésimo menor valor de la muestra.
+        \end{itemize}
+
+        Utilizando las técnicas mencionadas anteriormente obtenemos que el generador propuesto sería al menos útil, 
+        porque los resultados nos permiten concluir que no existe evidencia suficiente para rechazar la hipótesis 
+        nula, que en este caso particular considera la aleatoriedad de $F_0=\mathcal{U}(0,1)$ dada una muestra de
+        números aleatorios creados con nuestro generador. La implementación puede ser revisada en el código
+        adjunto.
+        
           
       \item Usando los resultados del problema 1 evaluar las integrales 
         \begin{itemize}
@@ -56,7 +152,7 @@
             
             Dado que $e^{-x^2}$ es simétrica con respecto a $x=0$, entonces
             \begin{equation}
-                \theta  = 2\int_{0}^{\infty}e^{-x^2}dx,
+                \theta  = 2\int_{0}^{\infty}e^{-x^2}dx.
             \end{equation}
             Sea $y = \frac{1}{1+x}$, $dy = -\frac{dx}{(1+x)^2}= -y^2dx$, entonces
             \begin{equation}
@@ -66,20 +162,20 @@
             De esta forma, podemos estimar $\theta$ como $\hat{\theta} = \mathbb{E}[h(y)]$
             con $ h(y) = 2\frac{e^{-(\frac1y-1)^2}}{y^2}$.
             
-            Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 1.772264$. \bigskip                        
+            Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 1.77$. \bigskip                        
               
-          \item $\displaystyle \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy$
+          \item $\displaystyle \int_{0}^{1}\int_{0}^{1}e^{(x+y)^2}dxdy$
             \begin{equation}
-                \theta = \int_{0}^{1}\int_{0}^{1}e^{-(x+y)^2}dxdy
+                \theta = \int_{0}^{1}\int_{0}^{1}e^{(x+y)^2}dxdy
             \end{equation}
             En este caso, $\theta$ puede ser estimado por $\hat{\theta} = \mathbb{E}[g(u_1, u_2)]$,
             con $U_1, U_2$ v.a.i.i.d $\mathcal{U}(0,1)$, por lo tanto
             \begin{equation}
-                \hat{\theta} = \frac1k \sum_{i=1}^ke^{-(x+y)^2},
+                \hat{\theta} = \frac1k \sum_{i=1}^ke^{(x+y)^2},
             \end{equation}
             donde $X, Y \sim U(0,1)$.
             
-            Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 4.891916$.                        
+            Ejecutando el código adjunto obtenemos $\hat{\theta} \approx 4.89$.                        
             
         \end{itemize}
       \item  Defina su Problema de simulación y su impacto, Conceptualización
@@ -99,11 +195,13 @@
             meteorológicas del escenario a simular.
           \item \textbf{Recolección de Datos:} Los datos necesarios para el desarrollo del trabajo deben ser 
             obtenidos de fuentes gubernamentales, específicamente de instituciones como CONAF para el modelar
-            el combustible y la DMC para conocer el modelo relacionado a los datos meteorológicos.
+            el combustible y la DMC para conocer el modelo relacionado a los datos meteorológicos. En el caso
+            que no exista la posibilidad de acceder a esta información, se puede utilizar fuentes de datos abiertas
+            como lo son Google Maps API, Open Weather Map API, NOAA, entre otros.
           \item \textbf{Construcción del Modelo:} Dado que el problema es el manejo y/o control de la 
             propagación del fuego en un incendio forestal, la idea es construir un modelo cualitativamente 
-            coherente con la realidad. Para iniciar, se busca comenzar con un modelo basado en autómata 
-            celular dada que la implementación es considerablemente más simple que comenzar con uno basado
+            coherente con la realidad. Para iniciar, se busca comenzar con un modelo basado en autómatas 
+            celulares dada que la implementación es considerablemente más simple que comenzar con uno basado
             en ecuaciones diferenciales. El modelo final espera ser construido mediante ecuaciones diferenciales
             estocásticas, siempre que el tiempo así lo permita.
           \item \textbf{Verificación y Validación:} Para verificar el modelo se intentará contactar con profesionales
@@ -209,7 +307,8 @@
   \bibliographystyle{newapa}
   \bibliography{references}
   
-  \section*{Código}
+  \section*{Código} \label{sec:code}
     \lstinputlisting[language=R]{../code/homework1.R}
+
 
 \end{document}
