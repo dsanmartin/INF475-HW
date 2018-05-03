@@ -78,8 +78,8 @@ validation <- function(sample) {
 
 # Quality of RNG
 N <- 10000000
-#X <- RNG_WH(N)
-#validation(X)
+X <- RNG_WH(N)
+validation(X)
 
 
 # Question 2
@@ -133,13 +133,13 @@ montecarlo2D <- function (f, k) {
 k = 1000000
 
 # Compute integrals
-#r1 <- montecarlo(f1, k)
-#r2 <- montecarlo(f2, k)
-#r3 <- montecarlo(f3, k)
+r1 <- montecarlo(f1, k)
+r2 <- montecarlo(f2, k)
+r3 <- montecarlo(f3, k)
 r4 <- montecarlo2D(f4, k)
 
 # Print results
-#cat(sprintf("Integral 1: %f \n", r1))
-#cat(sprintf("Integral 2: %f \n", r2))
-#cat(sprintf("Integral 3: %f \n", r3))
+cat(sprintf("Integral 1: %f \n", r1))
+cat(sprintf("Integral 2: %f \n", r2))
+cat(sprintf("Integral 3: %f \n", r3))
 cat(sprintf("Integral 4: %f \n", r4))
